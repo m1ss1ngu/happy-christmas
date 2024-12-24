@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圣诞快乐</title>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        #main {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #video1 {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @media screen and (orientation: portrait) {
+            #main {
+                transform: rotate(90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                position: fixed;
+                top: 100%;
+                left: 0;
+            }
+            #video1 {
+                object-fit: contain;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <video id="video1" muted autoplay loop playsinline webkit-playsinline x5-playsinline
+            src="https://yidianyihua-1331262920.cos.ap-beijing.myqcloud.com/chrismas.mp4">
+        </video>
+        <audio id="music1" loop preload="auto" playsinline webkit-playsinline>
+            <source src="https://yidianyihua-1331262920.cos.ap-beijing.myqcloud.com/jinniandongtianpeizhewoba.mp3">
+        </audio>
+    </div>
+    <script>
+        const video = document.getElementById("video1");
+        const audio = document.getElementById("music1");
+        
+        // 尝试自动播放
+        function tryAutoPlay() {
+            video.play().catch(e => console.log("视频自动播放失败:", e));
+            audio.play().catch(e => console.log("音频自动播放失败:", e));
+        }
+        
+        // 页面加载完成后尝试播放
+        window.addEventListener('load', tryAutoPlay);
+        
+        // 用户交互时尝试播放
+        document.addEventListener("click", () => {
+            tryAutoPlay();
+            // 尝试全屏和横屏
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(e => console.log(e));
+            }
+        });
+        
+        // 持续尝试播放音频
+        setInterval(tryAutoPlay, 1000);
+        
+        // 视频播放速度
+        video.playbackRate = 0.8;
+        
+        // 处理微信浏览器
+        document.addEventListener("WeixinJSBridgeReady", tryAutoPlay);
+        
+        // 处理各种可能的状态变化
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) tryAutoPlay();
+        });
+        
+        window.addEventListener('focus', tryAutoPlay);
+        window.addEventListener('pageshow', tryAutoPlay);
+    </script>
+</body>
+</html>
